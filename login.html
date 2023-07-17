@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Judge0 Code Execution</title>
+  <style>
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Judge0 Code Execution</h1>
+
+    <!-- Registration Form -->
+    <div id="registerForm">
+      <h2>Register</h2>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="registerUsername" placeholder="Enter your username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="registerPassword" placeholder="Enter your password">
+      </div>
+      <div class="form-group">
+        <button id="registerBtn" class="btn">Register</button>
+      </div>
+    </div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <h2>Login</h2>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="loginUsername" placeholder="Enter your username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="loginPassword" placeholder="Enter your password">
+      </div>
+      <div class="form-group">
+        <button id="loginBtn" class="btn">Login</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div id="result" style="display: none;"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  <script>
+    // Toggle between registration and login forms
+    document.getElementById('registerBtn').addEventListener('click', function() {
+      document.getElementById('registerForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      document.getElementById('registerForm').style.display = 'block';
+      document.getElementById('loginForm').style.display = 'none';
+    });
+
+    // Register event listener
+    document.getElementById('registerBtn').addEventListener('click', function() {
+      var username = document.getElementById('registerUsername').value;
+      var password = document.getElementById('registerPassword').value;
+
+      // Create the request body
+      var requestBody = {
+        username: username,
+        password: password
+      };
+
+      // Send the registration request to the backend API
+      axios.post('http://localhost:8080/register', requestBody)
+        .then(function(response) {
+          // Display the result in the frontend
+          var resultElement = document.getElementById('result');
+          resultElement.style.display = 'block';
+          resultElement.innerHTML = '<p>' + response.data.message + '</p>';
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+        });
+    });
+
+    // Login event listener
+    document.getElementById('loginBtn').addEventListener('click', function() {
+      var username = document.getElementById('loginUsername').value;
+      var password = document.getElementById('loginPassword').value;
+
+      // Create the request body
+      var requestBody = {
+        username: username,
+        password: password
+      };
+
+      // Send the login request to the backend API
+      axios.post('/login', requestBody)
+        .then(function(response) {
+          // Store the token in the browser's localStorage
+          localStorage.setItem('jwtToken', response.data.token);
+
+          // Redirect to the code submission page or perform other actions
+          window.location.href = '/code-submission.html';
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+        });
+    });
+  </script>
+</body>
+</html>
